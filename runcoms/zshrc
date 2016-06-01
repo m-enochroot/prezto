@@ -12,6 +12,8 @@ fi
 
 # Customize to your needs...
 
+
+
 # Start rbenv
 #export PATH="$HOME/.rbenv/bin:$PATH"
 #eval "$(rbenv init -)"
@@ -174,7 +176,60 @@ HISTSIZE=500
 HISTCONTROL=ignoreboth
 
 
+  set_env () {
+    if [ "$1" == "gfi" ] ; then
 
+        echo set Gfi environment
+
+        export proxy_gfi=webdefence.global.blackspider.com:80
+        export HTTP_PROXY=$proxy_gfi
+        export HTTPS_PROXY=$proxy_gfi
+        export http_proxy=$proxy_gfi
+        export https_proxy=$proxy_gfi
+
+        npm config set http-proxy $proxy_gfi
+        npm config set proxy $proxy_gfi
+        npm config set https-proxy $proxy_gfi
+
+        apm config set http-proxy $proxy_gfi
+        apm config set proxy $proxy_gfi
+        apm config set https-proxy $proxy_gfi
+
+        git config --global http.proxy $proxy_gfi
+        git config --global https.proxy $proxy_gfi
+        git config --global url."https://".insteadOf git://
+
+    else
+
+        echo set Home environment
+
+        npm config del http-proxy
+        npm config del proxy
+        npm config del https-proxy
+
+        apm config del http-proxy
+        apm config del proxy
+        apm config del https-proxy
+
+        git config --global --unset http.proxy
+        git config --global --unset https.proxy
+        git config --global --unset url."https://".insteadOf
+
+    fi
+    
+  }
+
+alias -g T='ALL_PROXY=socks5://127.0.0.1:8020'
+
+  yt-dl () {
+    for i in "$@"; do print -- \'"$i"\'; youtube-dl --prefer-ffmpeg https://www.youtube.com/watch\?v\=$i; done;
+  }
+
+alias d-server='ssh srv-admin@172.16.70.155'
+
+rmd () {
+  pandoc $1 | lynx -stdin
+}
 
 #   -----------------------------
 #   2.  MAKE TERMINAL BETTER
@@ -185,7 +240,7 @@ HISTCONTROL=ignoreboth
 #alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
 #alias ll='ls -FGlAhp'                       # Preferred 'ls' implementation
 #alias less='less -FSRXc'                    # Preferred 'less' implementation
-cd() { builtin cd "$@"; ls -Ap; }               # Always list directory contents upon 'cd'
+#cd() { builtin cd "$@"; ls -Ap; }               # Always list directory contents upon 'cd'
 #alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 #alias ..='cd ../'                           # Go back 1 directory level
 #alias ...='cd ../../'                       # Go back 2 directory levels
@@ -326,35 +381,6 @@ ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name end
     my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
 
 
-#   ---------------------------
-#   6.  NETWORKING
-#   ---------------------------
-
-alias myip='curl ip.appspot.com'                    # myip:         Public facing IP Address
-alias netCons='lsof -i'                             # netCons:      Show all open TCP/IP sockets
-alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
-alias lsock='sudo /usr/sbin/lsof -i -P'             # lsock:        Display open sockets
-alias lsockU='sudo /usr/sbin/lsof -nP | grep UDP'   # lsockU:       Display only open UDP sockets
-alias lsockT='sudo /usr/sbin/lsof -nP | grep TCP'   # lsockT:       Display only open TCP sockets
-alias ipInfo0='ipconfig getpacket en0'              # ipInfo0:      Get info on connections for en0
-alias ipInfo1='ipconfig getpacket en1'              # ipInfo1:      Get info on connections for en1
-alias openPorts='sudo lsof -i | grep LISTEN'        # openPorts:    All listening connections
-alias showBlocked='sudo ipfw list'                  # showBlocked:  All ipfw rules inc/ blocked IPs
-
-#   ii:  display useful host related informaton
-#   -------------------------------------------------------------------
-    ii() {
-        echo -e "\nYou are logged on ${RED}$HOST"
-        echo -e "\nAdditionnal information:$NC " ; uname -a
-        echo -e "\n${RED}Users logged on:$NC " ; w -h
-        echo -e "\n${RED}Current date :$NC " ; date
-        echo -e "\n${RED}Machine stats :$NC " ; uptime
-        echo -e "\n${RED}Current network location :$NC " ; scselect
-        echo -e "\n${RED}Public facing IP Address :$NC " ;myip
-        #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
-        echo
-    }
-
 
 #   ---------------------------------------
 #   7.  SYSTEMS OPERATIONS & INFORMATION
@@ -429,8 +455,8 @@ httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grab
 #   ---------------------------------------
 #   10. Personal command
 #   ---------------------------------------
-alias gfi='~/script/env.sh gfi'
-alias home='~/script/env.sh home'
+alias gfi='. ~/script/env.sh gfi'
+alias home='. ~/script/env.sh home'
 
 alias tunnel='ssh -D 8020 -C -N 56c8f70b0c1e66171300004d@gateway-gfitls.rhcloud.com'
 
@@ -439,3 +465,9 @@ export NVM_DIR="/Users/jeromemare/.nvm"
 
 # added by travis gem
 [ -f /Users/jeromemare/.travis/travis.sh ] && source /Users/jeromemare/.travis/travis.sh
+
+###-tns-completion-start-###
+if [ -f /Users/jeromemare/.tnsrc ]; then
+    source /Users/jeromemare/.tnsrc
+fi
+###-tns-completion-end-###
