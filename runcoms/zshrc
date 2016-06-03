@@ -18,8 +18,16 @@ fi
 #export PATH="$HOME/.rbenv/bin:$PATH"
 #eval "$(rbenv init -)"
 
+# set PATH so it includes user's .local/bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+    fpath=("$HOME/.local/bin/" $fpath)
+fi
+
 # Add homebrew to the completion path
 fpath=("/usr/local/bin/" $fpath)
+
+
 
 # why would you type 'cd dir' if you could just type 'dir'?
 setopt AUTO_CD
@@ -181,7 +189,7 @@ HISTCONTROL=ignoreboth
 
         echo set Gfi environment
 
-        export proxy_gfi=webdefence.global.blackspider.com:80
+        export proxy_gfi=http://webdefence.global.blackspider.com:80
         export HTTP_PROXY=$proxy_gfi
         export HTTPS_PROXY=$proxy_gfi
         export http_proxy=$proxy_gfi
@@ -216,7 +224,7 @@ HISTCONTROL=ignoreboth
         git config --global --unset url."https://".insteadOf
 
     fi
-    
+
   }
 
 alias -g T='ALL_PROXY=socks5://127.0.0.1:8020'
