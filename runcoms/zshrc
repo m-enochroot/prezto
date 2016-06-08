@@ -185,11 +185,11 @@ HISTCONTROL=ignoreboth
 
 
   set_env () {
-    if [ "$1" == "gfi" ] ; then
+    if [ "$1" = "gfi" ] ; then
 
         echo set Gfi environment
 
-        export proxy_gfi=http://webdefence.global.blackspider.com:80
+        export proxy_gfi=http://webdefence.global.blackspider.com:80/
         export HTTP_PROXY=$proxy_gfi
         export HTTPS_PROXY=$proxy_gfi
         export http_proxy=$proxy_gfi
