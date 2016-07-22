@@ -35,11 +35,15 @@ zstyle ':prezto:load' pmodule \
   'homebrew' \
   'osx' \
   'ruby' \
+  'python' \
+  'node' \
   'git' \
   'networking' \
   'syntax-highlighting' \
   'history-substring-search' \
+  'task-gtd' \
   'prompt'
+
 
 #
 # Autosuggestions
@@ -170,3 +174,8 @@ zstyle ':prezto:module:terminal:tab-title' format '%m: %s'
 
 # Integrate with iTerm2.
 # zstyle ':prezto:module:tmux:iterm' integrate 'yes'
+
+zstyle ':completion:*:cd:*' ignore-parents parent pwd
+
+zstyle ':completion:*:*:kill:*' menu yes select
+zstyle ':completion:*:kill:*'   force-list always

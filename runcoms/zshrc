@@ -64,6 +64,7 @@ setopt NO_HUP
 
 # only fools wouldn't do this ;-)
 export EDITOR="vim"
+export VISUAL="vim"
 
 setopt IGNORE_EOF
 
@@ -185,11 +186,11 @@ HISTCONTROL=ignoreboth
 
 
   set_env () {
-    if [ "$1" == "gfi" ] ; then
+    if [ "$1" = "gfi" ] ; then
 
         echo set Gfi environment
 
-        export proxy_gfi=http://webdefence.global.blackspider.com:80
+        export proxy_gfi=http://webdefence.global.blackspider.com:80/
         export HTTP_PROXY=$proxy_gfi
         export HTTPS_PROXY=$proxy_gfi
         export http_proxy=$proxy_gfi
@@ -210,6 +211,12 @@ HISTCONTROL=ignoreboth
     else
 
         echo set Home environment
+
+        unset proxy_gfi
+        unset HTTP_PROXY
+        unset HTTPS_PROXY
+        unset http_proxy
+        unset https_proxy
 
         npm config del http-proxy
         npm config del proxy
@@ -466,10 +473,21 @@ httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grab
 alias gfi='. ~/script/env.sh gfi'
 alias home='. ~/script/env.sh home'
 
+alias n='sncli -n'
+
 alias tunnel='ssh -D 8020 -C -N 56c8f70b0c1e66171300004d@gateway-gfitls.rhcloud.com'
 
 export NVM_DIR="/Users/jeromemare/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+export RBENV_VERSION="2.3.0"
+
+# Python VirtualEnvs
+export PATH=/usr/local/bin:$PATH
+export WORKON_HOME=~/.virtualenvs
+source /usr/local/bin/virtualenvwrapper.sh
+
+export CHEATPATH="$CHEATPATH:~/.mycheats"
 
 # added by travis gem
 [ -f /Users/jeromemare/.travis/travis.sh ] && source /Users/jeromemare/.travis/travis.sh
