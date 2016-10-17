@@ -195,22 +195,31 @@ HISTCONTROL=ignoreboth
         export HTTPS_PROXY=$proxy_gfi
         export http_proxy=$proxy_gfi
         export https_proxy=$proxy_gfi
+        export NO_PROXY='mobilitygit'
+        export no_proxy='mobilitygit'
 
-        npm config set http-proxy $proxy_gfi
-        npm config set proxy $proxy_gfi
-        npm config set https-proxy $proxy_gfi
+        if (( $+commands[npm] )) ; then
+          npm config set http-proxy $proxy_gfi
+          npm config set proxy $proxy_gfi
+          npm config set https-proxy $proxy_gfi
+        fi
 
-        apm config set http-proxy $proxy_gfi
-        apm config set proxy $proxy_gfi
-        apm config set https-proxy $proxy_gfi
+        if (( $+commands[apm] )) ; then
+          apm config set http-proxy $proxy_gfi
+          apm config set proxy $proxy_gfi
+          apm config set https-proxy $proxy_gfi
+        fi
 
-        git config --global http.proxy $proxy_gfi
-        git config --global https.proxy $proxy_gfi
-        git config --global url."https://".insteadOf git://
+        if (( $+commands[git] )) ; then
+          git config --global http.proxy $proxy_gfi
+          git config --global https.proxy $proxy_gfi
+          git config --global url."https://".insteadOf git://
+          git config --global remote.mobilitygit.proxy ""
+        fi
 
     else
 
-        echo set Home environment
+        echo set No Proxy
 
         unset proxy_gfi
         unset HTTP_PROXY
@@ -218,17 +227,23 @@ HISTCONTROL=ignoreboth
         unset http_proxy
         unset https_proxy
 
-        npm config del http-proxy
-        npm config del proxy
-        npm config del https-proxy
+        if (( $+commands[npm] )) ; then
+          npm config del http-proxy
+          npm config del proxy
+          npm config del https-proxy
+        fi
 
-        apm config del http-proxy
-        apm config del proxy
-        apm config del https-proxy
+        if (( $+commands[apm] )) ; then
+          apm config del http-proxy
+          apm config del proxy
+          apm config del https-proxy
+        fi
 
-        git config --global --unset http.proxy
-        git config --global --unset https.proxy
-        git config --global --unset url."https://".insteadOf
+        if (( $+commands[git] )) ; then
+          git config --global --unset http.proxy
+          git config --global --unset https.proxy
+          git config --global --unset url."https://".insteadOf
+        fi
 
     fi
 
@@ -471,29 +486,36 @@ httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grab
 #   10. Personal command
 #   ---------------------------------------
 alias gfi='. ~/script/env.sh gfi'
-alias home='. ~/script/env.sh home'
+alias noproxy='. ~/script/env.sh noproxy'
 
 alias n='sncli -n'
 
 alias tunnel='ssh -D 8020 -C -N 56c8f70b0c1e66171300004d@gateway-gfitls.rhcloud.com'
+alias tunnel2='ssh -D 8020 -C -N 579a373f89f5cf3cbd0000e4@myproxyweb-epyphite.rhcloud.com'
 
-export NVM_DIR="/Users/jeromemare/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
-export RBENV_VERSION="2.3.0"
+export RBENV_VERSION="2.3.1"
 
 # Python VirtualEnvs
 export PATH=/usr/local/bin:$PATH
 export WORKON_HOME=~/.virtualenvs
 source /usr/local/bin/virtualenvwrapper.sh
 
+if (( $+commands[workon] )) ; then
+  workon python3
+fi
+
 export CHEATPATH="$CHEATPATH:~/.mycheats"
 
 # added by travis gem
-[ -f /Users/jeromemare/.travis/travis.sh ] && source /Users/jeromemare/.travis/travis.sh
+[ -f ~/.travis/travis.sh ] && source ~/.travis/travis.sh
 
 ###-tns-completion-start-###
-if [ -f /Users/jeromemare/.tnsrc ]; then
-    source /Users/jeromemare/.tnsrc
+if [ -f ~/.tnsrc ]; then
+    source ~/.tnsrc
 fi
 ###-tns-completion-end-###
+
+export NVM_DIR="~/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
+[[ -s "~/.gvm/scripts/gvm" ]] && source "~/.gvm/scripts/gvm"
