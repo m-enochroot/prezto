@@ -13,6 +13,26 @@ fi
 # Put stuff in my GTD inbox
 alias in='task add +in'
 
+# Put stuf in project
+task_projet () {
+    task add pro:$1 "$2"
+}
+alias taskp=task_projet
+
+# Display selected category of tasks
+task_todo () {
+    project=$1
+    if [ "$project" = "" ] ; then
+        task list
+    else 
+      task pro:$project list
+    fi
+}
+alias todo='task_todo'
+
+# Display only working task
+alias todow='task pro:w list'
+
 # Implement tickler as alias
 tickle () {
     deadline=$1
